@@ -1,0 +1,13 @@
+Total Horas: 4h
+
+6/12/2020
+- 16:00 Inicio projeto
+
+- Mockup inicial
+
+- App
+	Estruturação inicial
+		Classes
+		Layout básico ecrã principal - OK
+	Comunicação com o serviço de meteo - OK
+		(Coms são lentas a retribuir valores)

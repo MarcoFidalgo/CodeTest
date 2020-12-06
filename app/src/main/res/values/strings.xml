@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="condicoes_atuais">Current conditions</string>
+    <string name="outras_cidades">Other cities</string>
+    <string name="sem_internet">No network connection available.</string>
+    <string name="sem_info_json">Error calling Weather API JSON</string>
+    <string name="erro_aceder_pagina">"Error opening page: "</string>
+
+</resources>

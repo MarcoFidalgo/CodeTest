@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffaa00"/>
+        <TextView
+            android:id="@+id/main_cidadeCorrente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#CIDADE#"
+            android:textSize="40sp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:paddingVertical="50dp"/>
+
+    </FrameLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".7"
+        android:text="@string/outras_cidades"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:textSize="16sp"/>
+    <ListView
+        android:id="@+id/main_listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="#cecece">
+
+    </ListView>
+
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="condicoes_atuais">Condições atuais</string>
+    <string name="outras_cidades">Outras cidades</string>
+    <string name="sem_internet">Não tem ligação à internet</string>
+    <string name="sem_info_json">Erro a ler informação JSON</string>
+    <string name="erro_aceder_pagina">"Erro a aceder à página: "</string>
+</resources>
