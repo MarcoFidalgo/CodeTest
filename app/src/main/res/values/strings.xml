@@ -5,5 +5,12 @@
     <string name="sem_internet">No network connection available.</string>
     <string name="sem_info_json">Error calling Weather API JSON</string>
     <string name="erro_aceder_pagina">"Error opening page: "</string>
+    <string name="lv_temp">Temperature</string>
+    <string name="lv_temp_sentida">Feels like</string>
+    <string name="lv_precepitacao">Precipitation Prob.</string>
+    <string name="lv_vento">Wind speed</string>
+    <string name="lv_humidade">Humidity</string>
+    <string name="lv_descricao">Description</string>
+    <string name="lv_pressao_atm">Atmospheric pressure</string>
 
 </resources>

@@ -6,4 +6,11 @@
     <string name="sem_internet">Não tem ligação à internet</string>
     <string name="sem_info_json">Erro a ler informação JSON</string>
     <string name="erro_aceder_pagina">"Erro a aceder à página: "</string>
+    <string name="lv_temp">Temperatura</string>
+    <string name="lv_temp_sentida">Sensação térmica</string>
+    <string name="lv_precepitacao">Prob. precipitação</string>
+    <string name="lv_vento">Velocidade do vento</string>
+    <string name="lv_humidade">Humidade</string>
+    <string name="lv_descricao">Descrição</string>
+    <string name="lv_pressao_atm">Pressão atmosférica</string>
 </resources>

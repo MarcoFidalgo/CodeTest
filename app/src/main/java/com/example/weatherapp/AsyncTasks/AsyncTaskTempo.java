@@ -1,10 +1,12 @@
 package com.example.weatherapp.AsyncTasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.weatherapp.CustomAdapters.CustomAdapterLVMain;
 import com.example.weatherapp.Objetos.DadosMeteo;
 import com.example.weatherapp.R;
 
@@ -18,6 +20,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Locale;
+
+import static android.view.View.GONE;
 
 /**
  * Asynctask que permite fazer o download de dados JSON relativos à meteorologia de
@@ -40,6 +46,7 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
     private ListView lvCidades = null;
     private String cidade;
     private String[] listaCidades;
+    private Context context;
 
 
     public AsyncTaskTempo(TextView tvCidade, String cidade) {
@@ -47,7 +54,8 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
         this.cidade = cidade;
     }
 
-    public AsyncTaskTempo(ListView lvCidades, String[] listaCidades) {
+    public AsyncTaskTempo(Context context, ListView lvCidades, String[] listaCidades) {
+        this.context = context;
         this.lvCidades = lvCidades;
         this.listaCidades = listaCidades;
     }
@@ -90,7 +98,12 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
             DadosMeteo[] dados = (DadosMeteo[])objDados;
             //Corre todos os elementos, os que estiverem a null não vão para o adapter
             if(dados.length > 0) {
-                //TODO: enviar os dados para a ListView
+                final CustomAdapterLVMain customAdapterDocsAntigos = new CustomAdapterLVMain(context, dados);
+
+                lvCidades.setAdapter(customAdapterDocsAntigos);
+
+                //Visibilidade
+                //activity.findViewById(R.id.barraLoading).setVisibility(GONE);
             }
             else {
                 //nao encontrou nenhuma das cidades pretendidas
@@ -179,6 +192,10 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
         String url;
         url = StringUtils.replace(urlBase,"<CIDADE>",cidades);
         url = StringUtils.replace(url,"<API_KEY>",API_KEY);
+
+        //Suporte para lingua PT
+        if( Locale.getDefault().getDisplayLanguage().contains("português"))
+            url += "&lang=pt";
         return url;
     }
 

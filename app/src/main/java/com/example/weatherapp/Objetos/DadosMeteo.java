@@ -1,6 +1,8 @@
 package com.example.weatherapp.Objetos;
 
-public class DadosMeteo {
+import java.io.Serializable;
+
+public class DadosMeteo implements Serializable {
 
     private String codigoIcone;     // A API fornece um código para ícones, vai ajudar para diferenciar imagens
     private String nomeCidade;      // Nome da cidade

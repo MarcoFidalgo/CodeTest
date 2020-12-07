@@ -17,8 +17,13 @@ Total Horas: 7.5h
 	//TODO ICONS, IMAGENS, animacoes, 
 	//Amanhã continuar nas várias cidades e visualizar na lista do 1º ecrã
 
-7/12/2020 15.30-
+7/12/2020 15.30- 18.30 // 19.30-
 - Estruturação
 	- Classe DadosMeteo
-- Comunicação
-		- 
+- Todos os loads no primeiro ecrã - OK
+- Desenvolver 2º ecrã
+	- Vou usar um adaptador à mesma. Desta forma, caso seja necessário mostrar 
+	  campos adicionais, não estamos limitados a um nº de TViews contante
+		- Passar os dados de uma cidade para uma coleção de chave-valor. Vou usar um HashMap  
+//TODO: adicionar loadings e fades
+ 

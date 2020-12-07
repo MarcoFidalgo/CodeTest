@@ -22,8 +22,10 @@
  import android.net.ConnectivityManager;
  import android.net.NetworkInfo;
  import android.os.Bundle;
+ import android.os.Parcelable;
  import android.provider.Settings;
  import android.util.Log;
+ import android.widget.ListAdapter;
  import android.widget.ListView;
  import android.widget.TextView;
  import android.widget.Toast;
@@ -38,6 +40,7 @@
 
  import org.apache.commons.lang3.StringUtils;
 
+ import java.io.Serializable;
  import java.util.List;
  import java.util.Locale;
 
@@ -57,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
         pedePermissoes();
         verificaSeTemGPSLigado();
 
-
-
-
-
         //Lança asynctask para a Cidade Atual
         if(gpsLigado){
             /*NOTA: Como existe a impossibilidade de pesquisar por vários nomes de cidade mas apenas por IDs,
@@ -69,9 +68,32 @@ public class MainActivity extends AppCompatActivity {
 
                     A solução alternativa com apenas um pedido, seria procurar pelo ID da cidade corrente
                     no fich. JSON disponibilizado no site da API e juntar aos IDS das restantes cidades*/
-            buscaCidadeCorr();
-            buscaCidadesRestantes();
+
+            //Se for a 1ª vez que corre
+            if(savedInstanceState == null) {
+                buscaCidadeCorr();
+                buscaCidadesRestantes();
+            }
+            else{
+
+            }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Save the state
+        outState.putString("nomeCidade", ((TextView)findViewById(R.id.main_cidadeCorrente)).getText().toString());
+        outState.putSerializable("lista", (Serializable) ((ListView)findViewById(R.id.main_listView)).getAdapter());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Read the state
+        ((TextView)findViewById(R.id.main_cidadeCorrente)).setText( savedInstanceState.getString("nomeCidade") );
+        ((ListView)findViewById(R.id.main_listView)).setAdapter((ListAdapter) savedInstanceState.getSerializable("lista"));
     }
 
     /** Busca cidade corrente */
@@ -124,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
             ListView lvCidades = findViewById(R.id.main_listView);
             if (networkInfo != null && networkInfo.isConnected()) {
-                AsyncTaskTempo asyncTaskTempo = new AsyncTaskTempo(lvCidades,LISTA_CIDADES);
+                AsyncTaskTempo asyncTaskTempo = new AsyncTaskTempo(this,lvCidades,LISTA_CIDADES);
                 asyncTaskTempo.execute();
             }
             else

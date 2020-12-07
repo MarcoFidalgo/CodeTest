@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="99"
+        android:orientation="horizontal">
+    <TextView
+        android:id="@+id/main_lv_nome"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="50dp"
+        android:textColor="#000000"
+        android:text="nomecidade"
+        android:background="#ffffff"
+        android:layout_margin="1dp"
+        android:textSize="20sp"
+        android:gravity="center_vertical"/>
+    <TextView
+        android:id="@+id/main_lv_condicao"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="50dp"
+        android:textColor="#000000"
+        android:text="condicao"
+        android:background="#ffffff"
+        android:layout_margin="1dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        />
+    <TextView
+        android:id="@+id/main_lv_temp"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="50dp"
+        android:textColor="#000000"
+        android:text="temp"
+        android:gravity="center"
+        android:background="#ffffff"
+        android:layout_margin="1dp"
+        android:textSize="20sp"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/gradiente_vert_preto_fade_branco"/>
 </LinearLayout>
