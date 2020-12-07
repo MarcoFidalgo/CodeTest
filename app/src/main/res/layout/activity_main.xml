@@ -19,10 +19,11 @@
             android:id="@+id/main_cidadeCorrente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#CIDADE#"
-            android:textSize="40sp"
+            android:textSize="24sp"
+            android:textStyle="bold"
             android:layout_gravity="bottom|center_horizontal"
-            android:paddingVertical="50dp"/>
+            android:gravity="center"
+            android:paddingVertical="10dp"/>
 
     </FrameLayout>
     <TextView

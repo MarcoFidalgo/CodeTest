@@ -1,13 +1,24 @@
-Total Horas: 4h
+Total Horas: 7.5h
 
-6/12/2020
+6/12/2020 7.5h
 - 16:00 Inicio projeto
 
 - Mockup inicial
 
 - App
-	Estruturação inicial
-		Classes
-		Layout básico ecrã principal - OK
-	Comunicação com o serviço de meteo - OK
-		(Coms são lentas a retribuir valores)
+	- Estruturação inicial
+		- Classes
+		- Layout básico ecrã principal - OK
+	- Comunicação com o serviço de meteo - OK
+		- (Coms são lentas a retribuir valores, está dependente do servidor?)
+		- Hora e meia de voltas das permissões....
+		- Tentei várias abordagens na situação de "várias cidades", depois de ler melhor a docum. cheguei 
+		a uma conclusão
+	//TODO ICONS, IMAGENS, animacoes, 
+	//Amanhã continuar nas várias cidades e visualizar na lista do 1º ecrã
+
+7/12/2020 15.30-
+- Estruturação
+	- Classe DadosMeteo
+- Comunicação
+		- 
