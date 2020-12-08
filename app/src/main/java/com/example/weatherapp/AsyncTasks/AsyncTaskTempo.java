@@ -3,6 +3,7 @@ package com.example.weatherapp.AsyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,14 +44,18 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
     //private static final String LISTA_CIDADES = "{2267057,3117735,2968815,2009543,2618425,3169070,2643743,2964574,3067696,2761369}";
 
     private TextView tvCidade = null;
+    private TextView tvCidadeTemp = null;
+    private ImageView imagemCidade = null;
     private ListView lvCidades = null;
     private String cidade;
     private String[] listaCidades;
     private Context context;
 
 
-    public AsyncTaskTempo(TextView tvCidade, String cidade) {
+    public AsyncTaskTempo(TextView tvCidade,TextView tvCidadeTemp, ImageView imagemCidade, String cidade) {
         this.tvCidade = tvCidade;
+        this.tvCidadeTemp = tvCidadeTemp;
+        this.imagemCidade = imagemCidade;
         this.cidade = cidade;
     }
 
@@ -90,8 +95,9 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
         //Cidade Corrente
         if (objDados instanceof DadosMeteo) {
             DadosMeteo dados = (DadosMeteo)objDados;
-            tvCidade.setText(cidade + "\n" + dados.getTemperatura() + "º");
-
+            tvCidade.setText(cidade);
+            tvCidadeTemp.setText(Math.round(dados.getTemperatura())+"º");
+            fundoCidade(imagemCidade, dados.getCodigoIcone());
         }
         //Lista de cidades
         else if(objDados instanceof DadosMeteo[]){
@@ -197,6 +203,67 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
         if( Locale.getDefault().getDisplayLanguage().contains("português"))
             url += "&lang=pt";
         return url;
+    }
+
+    public void fundoCidade(ImageView view, String codigoIcone){
+        switch(codigoIcone) {
+            case "01d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f01d);
+                break;
+            case "01n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f01n);
+                break;
+            case "02d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f02d);
+                break;
+            case "02n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f02n);
+                break;
+            case "03d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f03d);
+                break;
+            case "03n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f03n);
+                break;
+            case "04d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f04d);
+                break;
+            case "04n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f04n);
+                break;
+            case "09d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f09d);
+                break;
+            case "09n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f09n);
+                break;
+            case "10d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f10d);
+                break;
+            case "10n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f10n);
+                break;
+            case "11d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f11d);
+                break;
+            case "11n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f11n);
+                break;
+            case "13d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f13d);
+                break;
+            case "13n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f13n);
+                break;
+            case "50d":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f50d);
+                break;
+            case "50n":
+                ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f50n);
+                break;
+            default:
+                break;
+        }
     }
 
 }

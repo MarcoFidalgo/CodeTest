@@ -20,7 +20,7 @@
         android:layout_margin="1dp"
         android:textSize="20sp"
         android:gravity="center_vertical"/>
-    <TextView
+    <!--<TextView
         android:id="@+id/main_lv_condicao"
         android:layout_width="0dp"
         android:layout_weight="2"
@@ -31,7 +31,12 @@
         android:layout_margin="1dp"
         android:gravity="center"
         android:textSize="20sp"
-        />
+        />-->
+        <ImageView
+            android:id="@+id/main_lv_condicao"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="50dp"/>
     <TextView
         android:id="@+id/main_lv_temp"
         android:layout_width="0dp"

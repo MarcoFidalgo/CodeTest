@@ -1,4 +1,4 @@
-Total Horas: 7.5h
+Total Horas: 18h
 
 6/12/2020 7.5h
 - 16:00 Inicio projeto
@@ -17,7 +17,7 @@ Total Horas: 7.5h
 	//TODO ICONS, IMAGENS, animacoes, 
 	//Amanhã continuar nas várias cidades e visualizar na lista do 1º ecrã
 
-7/12/2020 15.30- 18.30 // 19.30-
+7/12/2020 6h
 - Estruturação
 	- Classe DadosMeteo
 - Todos os loads no primeiro ecrã - OK
@@ -26,4 +26,9 @@ Total Horas: 7.5h
 	  campos adicionais, não estamos limitados a um nº de TViews contante
 		- Passar os dados de uma cidade para uma coleção de chave-valor. Vou usar um HashMap  
 //TODO: adicionar loadings e fades
- 
+
+8/12/2020 4.5h
+	//TODO Afinar as permissões, está a crashar a app na 1ª instalacao
+	Imagens, Icons, fundos.
+	Finalizar app
+ 	//TODO Não consegui guardar a imagem do ecrã principal qnd rodo o ecrã...

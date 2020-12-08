@@ -16,17 +16,22 @@
  import android.content.DialogInterface;
  import android.content.Intent;
  import android.content.pm.PackageManager;
+ import android.graphics.drawable.Drawable;
  import android.location.Address;
  import android.location.Geocoder;
  import android.location.LocationManager;
+ import android.media.Image;
  import android.net.ConnectivityManager;
  import android.net.NetworkInfo;
  import android.os.Bundle;
  import android.os.Parcelable;
  import android.provider.Settings;
  import android.util.Log;
+ import android.view.View;
+ import android.widget.ImageView;
  import android.widget.ListAdapter;
  import android.widget.ListView;
+ import android.widget.ProgressBar;
  import android.widget.TextView;
  import android.widget.Toast;
 
@@ -35,6 +40,7 @@
  import androidx.core.app.ActivityCompat;
 
  import com.example.weatherapp.AsyncTasks.AsyncTaskTempo;
+ import com.google.android.gms.common.images.ImageManager;
  import com.google.android.gms.location.FusedLocationProviderClient;
  import com.google.android.gms.location.LocationServices;
 
@@ -44,9 +50,9 @@
  import java.util.List;
  import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private static final String[] LISTA_CIDADES = {"Lisboa", "Madrid", "Paris", "Berlim", "Copenhaga", "Roma", "Londres", "Dublin", "Praga", "Viena"};
-
+    private boolean ativadadePrincipal;
     boolean gpsLigado = false;
 
     private String cidade = "Lisboa";   //Por defeito fica Lisboa
@@ -78,26 +84,52 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Caso rode o ecrã, esconde o loading(pq volta a aparecer)
+        if(((ListView)findViewById(R.id.main_listView)).getVisibility() == View.VISIBLE){
+            ((ProgressBar)findViewById(R.id.barraLoading)).setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save the state
-        outState.putString("nomeCidade", ((TextView)findViewById(R.id.main_cidadeCorrente)).getText().toString());
-        outState.putSerializable("lista", (Serializable) ((ListView)findViewById(R.id.main_listView)).getAdapter());
+        try {
+            View aaa = this.findViewById(android.R.id.content).getRootView();
+            outState.putString("nomeCidade", ((TextView) findViewById(R.id.main_cidadeCorrente)).getText().toString());
+            outState.putString("tempCidade", ((TextView) findViewById(R.id.main_cidadeCorrente_temp)).getText().toString());
+            outState.putSerializable("lista", (Serializable) ((ListView) findViewById(R.id.main_listView)).getAdapter());
+            //outState.putSerializable("imagem",(Serializable) ((ImageView)findViewById(R.id.main_imagemCidade)).getDrawable());
+
+            String a = "1";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
+
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Read the state
         ((TextView)findViewById(R.id.main_cidadeCorrente)).setText( savedInstanceState.getString("nomeCidade") );
+        ((TextView)findViewById(R.id.main_cidadeCorrente_temp)).setText( savedInstanceState.getString("tempCidade") );
         ((ListView)findViewById(R.id.main_listView)).setAdapter((ListAdapter) savedInstanceState.getSerializable("lista"));
+        //((ImageView)findViewById(R.id.main_imagemCidade)).setImageDrawable((Drawable) savedInstanceState.getSerializable("imagem"));
     }
 
     /** Busca cidade corrente */
     public void buscaCidadeCorr() {
+        ((ProgressBar)findViewById(R.id.barraLoading)).setVisibility(View.VISIBLE);
         try {
             FusedLocationProviderClient mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
             mLocationProvider.getLastLocation().addOnSuccessListener(this, location -> {
@@ -120,8 +152,10 @@ public class MainActivity extends AppCompatActivity {
                         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
                         TextView tvCidadeCorr = findViewById(R.id.main_cidadeCorrente);
+                        TextView tvCidadeCorrTemp = findViewById(R.id.main_cidadeCorrente_temp);
+                        ImageView imagemCidade = findViewById(R.id.main_imagemCidade);
                         if (networkInfo != null && networkInfo.isConnected()) {
-                            AsyncTaskTempo asyncTaskTempo = new AsyncTaskTempo(tvCidadeCorr,cidade);
+                            AsyncTaskTempo asyncTaskTempo = new AsyncTaskTempo(tvCidadeCorr,tvCidadeCorrTemp,imagemCidade,cidade);
                             asyncTaskTempo.execute();
                         } else
                             tvCidadeCorr.setText(R.string.sem_internet);
