@@ -13,11 +13,12 @@
     <string name="lv_descricao">Description</string>
     <string name="lv_pressao_atm">Atmospheric pressure</string>
     <string name="permission_denied_extstorage">Permission denied to read your External storage</string>
-    <string name="gps_off">Localization turned off</string>
+    <string name="gps_off">Location turned off</string>
     <string name="turn_on">Turn on</string>
     <string name="turn_off">Turn off</string>
     <string name="cancel">Cancel</string>
     <string name="current_city_notfound">Current city not found</string>
     <string name="citylist_notfound">It was not possible to find the requested cities</string>
+    <string name="loading_wait">Loading...</string>
 
 </resources>

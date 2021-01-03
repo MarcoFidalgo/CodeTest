@@ -23,8 +23,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.weatherapp.DetalhesActivity;
-import com.example.weatherapp.Objetos.DadosMeteo;
+import com.example.weatherapp.DetailActivity;
+import com.example.weatherapp.Objetos.WeatherData;
 import com.example.weatherapp.R;
 
 import java.io.Serializable;
@@ -32,12 +32,12 @@ import java.io.Serializable;
 public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Parcelable {
 
     private Context context;
-    private DadosMeteo[] dadosMeteo;
+    private WeatherData[] weatherData;
     private LayoutInflater inflater;
 
-    public CustomAdapterLVMain(Context applicationContext, DadosMeteo[] dadosMeteo) {
+    public CustomAdapterLVMain(Context applicationContext, WeatherData[] weatherData) {
         this.context = applicationContext;
-        this.dadosMeteo = dadosMeteo;
+        this.weatherData = weatherData;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -50,25 +50,25 @@ public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Pa
         view = inflater.inflate(R.layout.lv_row_mainactivity,parent, false); // inflate the layout
 
         // get current item to be displayed
-        DadosMeteo dados = (DadosMeteo) getItem(position);
+        WeatherData weatherDataView = (WeatherData) getItem(position);
 
-        //Altera os dados da vista
-        ((TextView)view.findViewById(R.id.main_lv_nome)).setText(dados.getNomeCidade());
-        ((TextView)view.findViewById(R.id.main_lv_temp)).setText(Math.round(dados.getTemperaturaMin()) + "º  " + Math.round(dados.getTemperaturaMax())+"º");
-        trocaIcons(view, dados.getCodigoIcone());
+        //Changes the data in the current view(row)
+        ((TextView)view.findViewById(R.id.main_lv_nome)).setText(weatherDataView.getCityName());
+        ((TextView)view.findViewById(R.id.main_lv_temp)).setText(Math.round(weatherDataView.getMinTemperature()) + "º  " + Math.round(weatherDataView.getMaxTemperature())+"º");
+        changeIcons(view, weatherDataView.getIconCode());
 
 
-        //Visibilidades
+        //Visibility
         ((ProgressBar)act.findViewById(R.id.barraLoading)).setVisibility(View.INVISIBLE);
         parent.setVisibility(View.VISIBLE);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mudar activity
-                Intent intent = new Intent(context, DetalhesActivity.class);
+                //change activity
+                Intent intent = new Intent(context, DetailActivity.class);
                 Bundle b = new Bundle();
-                intent.putExtra("cityData", dados);
+                intent.putExtra("cityData", weatherDataView);
                 intent.putExtras(b); //Put your id to your next Intent
                 context.startActivity(intent);
             }
@@ -77,9 +77,9 @@ public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Pa
         return view;
     }
 
-    /** Troca a imagem dos icon consoante a condição meteo. da cidade da view*/
-    public void trocaIcons(View view, String codigoIcone){
-        switch(codigoIcone) {
+    /** Changes image icon depending on the weather condition of the city in the current view */
+    public void changeIcons(View view, String iconCode){
+        switch(iconCode) {
             case "01d":
                 ((ImageView) view.findViewById(R.id.main_lv_condicao)).setImageResource(R.drawable.x01d);
                 break;
@@ -141,12 +141,12 @@ public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Pa
 
     @Override
     public int getCount() {
-        return dadosMeteo.length;
+        return weatherData.length;
     }
 
     @Override
     public Object getItem(int i) {
-        return dadosMeteo[i];
+        return weatherData[i];
     }
 
     @Override

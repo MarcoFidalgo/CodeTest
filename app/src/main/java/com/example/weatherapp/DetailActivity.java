@@ -17,10 +17,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.weatherapp.Objetos.DadosMeteo;
+import com.example.weatherapp.Objetos.WeatherData;
 
 
-public class DetalhesActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,24 +28,24 @@ public class DetalhesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detalhes);
 
         // To retrieve object in second Activity
-        DadosMeteo dados = (DadosMeteo) getIntent().getSerializableExtra("cityData");
+        WeatherData weatherData = (WeatherData) getIntent().getSerializableExtra("cityData");
         Log.d("testee","Changed activity");
 
-        ((TextView)findViewById(R.id.det_nome_cidade)).setText(dados.getNomeCidade()+"");
-        ((TextView)findViewById(R.id.det_descricao)).setText(dados.getDescricao()+"");
-        ((TextView)findViewById(R.id.det_temp)).setText(Math.round(dados.getTemperatura())+"º");
-        ((TextView)findViewById(R.id.det_temp_sentida)).setText(Math.round(dados.getSensacaoTermica())+"º");
-        ((TextView)findViewById(R.id.det_pressao_atm)).setText(dados.getPressaoAtm()+" hPa");
-        ((TextView)findViewById(R.id.det_vento)).setText(Math.round(dados.getVelocVento())+" km/h");
-        ((TextView)findViewById(R.id.det_humidade)).setText(dados.getHumidade()+" %");
+        ((TextView)findViewById(R.id.det_nome_cidade)).setText(weatherData.getCityName()+"");
+        ((TextView)findViewById(R.id.det_descricao)).setText(weatherData.getDescription()+"");
+        ((TextView)findViewById(R.id.det_temp)).setText(Math.round(weatherData.getTemperature())+"º");
+        ((TextView)findViewById(R.id.det_temp_sentida)).setText(Math.round(weatherData.getFeelsLike())+"º");
+        ((TextView)findViewById(R.id.det_pressao_atm)).setText(weatherData.getAtmPressure()+" hPa");
+        ((TextView)findViewById(R.id.det_vento)).setText(Math.round(weatherData.getWindSpeed())+" km/h");
+        ((TextView)findViewById(R.id.det_humidade)).setText(weatherData.getHumidity()+" %");
 
         ImageView ivCidade = (ImageView)findViewById(R.id.det_imagemCidade);
-        fundoCidade(ivCidade, dados.getCodigoIcone());
+        cityBackground(ivCidade, weatherData.getIconCode());
     }
 
 
-    public void fundoCidade(ImageView view, String codigoIcone){
-        switch(codigoIcone) {
+    public void cityBackground(ImageView view, String iconCode){
+        switch(iconCode) {
             case "01d":
                 view.setImageResource(R.drawable.f01d);
                 break;

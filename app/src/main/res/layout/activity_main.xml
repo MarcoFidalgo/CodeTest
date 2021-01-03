@@ -37,7 +37,7 @@
             android:textSize="24sp"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:text="Carregando, aguarde..."
+            android:text="@string/loading_wait"
             android:layout_gravity="bottom|left"
             android:gravity="left"
             android:paddingVertical="10dp"

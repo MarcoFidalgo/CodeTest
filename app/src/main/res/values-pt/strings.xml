@@ -20,4 +20,5 @@
     <string name="cancel">Cancelar</string>
     <string name="current_city_notfound">Não foi possível encontrar a cidade corrente</string>
     <string name="citylist_notfound">Não foi possível encontrar as cidades pretendidas</string>
+    <string name="loading_wait">Carregando, aguarde...</string>
 </resources>

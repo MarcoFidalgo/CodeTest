@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.weatherapp.CustomAdapters.CustomAdapterLVMain;
-import com.example.weatherapp.Objetos.DadosMeteo;
+import com.example.weatherapp.Objetos.WeatherData;
 import com.example.weatherapp.R;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,113 +35,110 @@ import java.util.Locale;
 
 
 
-public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
+public class AsyncTaskWeather extends AsyncTask<String, Void, Object> {
     private static final String API_KEY = "6b09297fd3edfcc07d3df5c3fb286350";
     private static final String URL_OPENWEATHER = "https://api.openweathermap.org/data/2.5/weather?q=<CIDADE>&appid=<API_KEY>&units=metric";
 
-    private TextView tvCidade = null;
-    private TextView tvCidadeTemp = null;
-    private ImageView imagemCidade = null;
-    private ListView lvCidades = null;
-    private String cidade;
-    private String[] listaCidades;
+    private TextView tvCity = null;
+    private TextView tvCityTemp = null;
+    private ImageView cityImage = null;
+    private ListView lvCities = null;
+    private String city;
+    private String[] cityList;
     private Context context;
 
 
-    public AsyncTaskTempo(TextView tvCidade,TextView tvCidadeTemp, ImageView imagemCidade, String cidade) {
-        this.tvCidade = tvCidade;
-        this.tvCidadeTemp = tvCidadeTemp;
-        this.imagemCidade = imagemCidade;
-        this.cidade = cidade;
+    public AsyncTaskWeather(TextView tvCity, TextView tvCityTemp, ImageView cityImage, String city) {
+        this.tvCity = tvCity;
+        this.tvCityTemp = tvCityTemp;
+        this.cityImage = cityImage;
+        this.city = city;
     }
 
-    public AsyncTaskTempo(Context context, ListView lvCidades, String[] listaCidades) {
+    public AsyncTaskWeather(Context context, ListView lvCities, String[] cityList) {
         this.context = context;
-        this.lvCidades = lvCidades;
-        this.listaCidades = listaCidades;
+        this.lvCities = lvCities;
+        this.cityList = cityList;
     }
 
 
     @Override
     protected Object doInBackground(String... params) {
-        String resultado = "(error)";
+        String result = "(error)";
 
         try {
-            if(this.tvCidade != null) {
-                resultado = getDadosCidade( trataURL(URL_OPENWEATHER,cidade) );
-                return trataResultado(resultado);
+            if(this.tvCity != null) {
+                result = getCityData( modifyURL(URL_OPENWEATHER,city) );
+                return convertsRequestResult(result);
             }
-            else if(this.lvCidades != null){
-                DadosMeteo[] dadosCidades = new DadosMeteo[listaCidades.length];
-                for (int i = 0; i < listaCidades.length; i++) {
-                    resultado = getDadosCidade( trataURL(URL_OPENWEATHER,listaCidades[i]));
-                    dadosCidades[i] = trataResultado(resultado);
+            else if(this.lvCities != null){
+                WeatherData[] dadosCidades = new WeatherData[cityList.length];
+                for (int i = 0; i < cityList.length; i++) {
+                    result = getCityData( modifyURL(URL_OPENWEATHER,cityList[i]));
+                    dadosCidades[i] = convertsRequestResult(result);
                 }
                 return dadosCidades;
             }
         } catch (Exception e) {
             Log.d("testee","[ERROR] doInBackground AsyncTaskWeather - Error: "+e);
         }
-        return resultado;
+        return result;
     }
     @Override
-    protected void onPostExecute(Object objDados) {
-        //SE RECEBER um DADOSMETEO é singular, se receber um array de dadosmeteo é a lista de cidades
+    protected void onPostExecute(Object objData) {
 
-        //Cidade Corrente
-        if (objDados instanceof DadosMeteo) {
-            DadosMeteo dados = (DadosMeteo)objDados;
-            tvCidade.setText(cidade);
-            tvCidadeTemp.setText(Math.round(dados.getTemperatura())+"º");
-            fundoCidade(imagemCidade, dados.getCodigoIcone());
+        //Current city
+        if (objData instanceof WeatherData) {
+            WeatherData weatherDataObj = (WeatherData)objData;
+            tvCity.setText(city);
+            tvCityTemp.setText(Math.round(weatherDataObj.getTemperature())+"º");
+            cityBackground(cityImage, weatherDataObj.getIconCode());
         }
-        //Lista de cidades
-        else if(objDados instanceof DadosMeteo[]){
-            DadosMeteo[] dados = (DadosMeteo[])objDados;
-            //Corre todos os elementos, os que estiverem a null não vão para o adapter
-            if(dados.length > 0) {
-                final CustomAdapterLVMain customAdapterDocsAntigos = new CustomAdapterLVMain(context, dados);
-                lvCidades.setAdapter(customAdapterDocsAntigos);
+
+        //List of cities
+        else if(objData instanceof WeatherData[]){
+            WeatherData[] weatherDataObj = (WeatherData[])objData;
+            //Iterate through all elements, the ones that are null, don't go into the adapter
+            if(weatherDataObj.length > 0) {
+                final CustomAdapterLVMain customAdapterDocsAntigos = new CustomAdapterLVMain(context, weatherDataObj);
+                lvCities.setAdapter(customAdapterDocsAntigos);
             }
             else {
-                //nao encontrou nenhuma das cidades pretendidas
-                tvCidade.setText(R.string.citylist_notfound);
+                //Didn't find any of the needed cities
+                tvCity.setText(R.string.citylist_notfound);
             }
         }
         else{
-            //Caso receba um null
-            tvCidade.setText(R.string.current_city_notfound);
+            //In case of getting a null as reply
+            tvCity.setText(R.string.current_city_notfound);
         }
     }
 
-    //## Funções auxiliares
 
-    /** Trata resultado do pedido devolvendo um objeto 'DadosMeteo' */
-    public DadosMeteo trataResultado(String resultado){
+    /** Converts the request result into an object WeatherData */
+    public WeatherData convertsRequestResult(String result){
         try {
-            JSONObject obj = new JSONObject((String) resultado);
+            JSONObject obj = new JSONObject((String) result);
 
             JSONArray  weather = obj.getJSONArray("weather");
             JSONObject  main = obj.getJSONObject("main"),
                         wind = obj.getJSONObject("wind");
-            double temperatura = main.getDouble("temp");
 
             JSONObject o1 = new JSONObject();
-
             String a = (weather.getJSONObject(0)).getString("main");
 
-            return new DadosMeteo(
-                    (weather.getJSONObject(0)).getString("icon"),       // Ícone da condi. atmosférica
-                    obj.getString("name"),                                     // Nome cidade
-                    (weather.getJSONObject(0)).getString("main"),       // Condição
-                    (weather.getJSONObject(0)).getString("description"),// Descrição da condição
-                    main.getDouble("temp"),                                   // Temperatura atual
-                    main.getDouble("feels_like"),                             // Sensação térmica
-                    main.getDouble("temp_min"),                               // Temperatura mínima
-                    main.getDouble("temp_max"),                               // Temepratura máxima
-                    main.getInt("pressure"),                                  // Pressão atm.
-                    main.getInt("humidity"),                                  // Humidade relativa
-                    wind.getDouble("speed"));                                 // Velocidade vento
+            return new WeatherData(
+                    (weather.getJSONObject(0)).getString("icon"),       // Icon representing the weather condition
+                    obj.getString("name"),                                     // City name
+                    (weather.getJSONObject(0)).getString("main"),       // Weather condition
+                    (weather.getJSONObject(0)).getString("description"),// Description of the condition
+                    main.getDouble("temp"),                                   // Temperature
+                    main.getDouble("feels_like"),                             // Feels like
+                    main.getDouble("temp_min"),                               // Min. Temperature
+                    main.getDouble("temp_max"),                               // Max. Temperature
+                    main.getInt("pressure"),                                  // Atmospheric pressure.
+                    main.getInt("humidity"),                                  // Relative humidity
+                    wind.getDouble("speed"));                                 // Wind Speed
         }
         catch(JSONException je){
             je.printStackTrace();
@@ -153,19 +150,19 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
     }
 
 
-    /** Faz o pedido ao API enviando o URL tratado e recebendo os dados JSON como String */
-    String getDadosCidade(String endereco) {
+    /** Sends an URL to the API requesting weather data  */
+    String getCityData(String link) {
         StringBuilder resp = new StringBuilder();
         try {
-            URL url = new URL(endereco);
+            URL url = new URL(link);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milisegundos */);
-            conn.setConnectTimeout(15000 /* milisegundos */);
+            conn.setReadTimeout(10000 /* miliseconds */);
+            conn.setConnectTimeout(15000 /* miliseconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
             conn.connect();
-            int codigo = conn.getResponseCode();
-            if (codigo == HttpURLConnection.HTTP_OK /*200*/) {
+            int code = conn.getResponseCode();
+            if (code == HttpURLConnection.HTTP_OK /*200*/) {
                 InputStream is = conn.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line;
@@ -173,7 +170,7 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
                     resp.append(line + "\n");
             }
             else
-                resp.append(R.string.erro_aceder_pagina + codigo);
+                resp.append(R.string.erro_aceder_pagina + code);
         }
         catch (Exception e) {
             Log.d("testee","[ERROR] AsyncTaskWeather-getData() - Error: "+e);
@@ -181,10 +178,10 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
         return resp.toString();
     }
 
-    /** Modifica a URL para aceder à API consoante a cidade/API_KEY*/
-    public String trataURL(String urlBase, String cidades){
+    /** Modifies the URL to access the API depending on the city */
+    public String modifyURL(String urlBase, String city){
         String url;
-        url = StringUtils.replace(urlBase,"<CIDADE>",cidades);
+        url = StringUtils.replace(urlBase,"<CIDADE>",city);
         url = StringUtils.replace(url,"<API_KEY>",API_KEY);
 
         //Suporte para lingua PT
@@ -193,8 +190,8 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
         return url;
     }
 
-    public void fundoCidade(ImageView view, String codigoIcone){
-        switch(codigoIcone) {
+    public void cityBackground(ImageView view, String iconCode){
+        switch(iconCode) {
             case "01d":
                 ((ImageView) view.findViewById(R.id.main_imagemCidade)).setImageResource(R.drawable.f01d);
                 break;

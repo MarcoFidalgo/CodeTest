@@ -36,7 +36,7 @@
  import androidx.appcompat.app.AppCompatActivity;
  import androidx.core.app.ActivityCompat;
 
- import com.example.weatherapp.AsyncTasks.AsyncTaskTempo;
+ import com.example.weatherapp.AsyncTasks.AsyncTaskWeather;
  import com.google.android.gms.location.FusedLocationProviderClient;
  import com.google.android.gms.location.LocationServices;
 
@@ -45,11 +45,11 @@
  import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity{
-    private static final String[] LISTA_CIDADES = {"Lisboa", "Madrid", "Paris", "Berlim", "Copenhaga", "Roma", "Londres", "Dublin", "Praga", "Viena"};
-    private boolean ativadadePrincipal;
-    boolean gpsLigado = false;
+    private static final String[] CITY_LIST = {"Lisboa", "Madrid", "Paris", "Berlim", "Copenhaga", "Roma", "Londres", "Dublin", "Praga", "Viena"};
+    private boolean mainActivity;
+    boolean gpsOn = false;
 
-    private String cidade = "Lisboa";   //Por defeito fica Lisboa
+    private String city = "Lisboa";   //Default current city: Lisboa
 
 
     @Override
@@ -57,35 +57,24 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pedePermissoes();
-        verificaSeTemGPSLigado();
+        requestPermissions();
+        getGPSInternetState();
 
-        //Lança asynctask para a Cidade Atual
-        if(gpsLigado){
-            /*NOTA: Como existe a impossibilidade de pesquisar por vários nomes de cidade mas apenas por IDs,
-                    foi tomada a decisão de fazer 2 pedidos distintos.
-                    1 para a cidade corrente e outro para as restantes cidades.
+        //Launches AsyncTask for the current city
+        if(gpsOn){
 
-                    A solução alternativa com apenas um pedido, seria procurar pelo ID da cidade corrente
-                    no fich. JSON disponibilizado no site da API e juntar aos IDS das restantes cidades*/
-
-            //Se for a 1ª vez que corre
+            //First time it runs
             if(savedInstanceState == null) {
-                buscaCidadeCorr();
-                buscaCidadesRestantes();
-            }
-            else{
-
+                searchCurrCity();
+                searchRemainingCities();
             }
         }
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //Caso rode o ecrã, esconde o loading(pq volta a aparecer)
+        //When changing screen orientation, hides the loading circle
         if(((ListView)findViewById(R.id.main_listView)).getVisibility() == View.VISIBLE){
             ((ProgressBar)findViewById(R.id.barraLoading)).setVisibility(View.INVISIBLE);
         }
@@ -115,15 +104,15 @@ public class MainActivity extends AppCompatActivity{
         ((ListView)findViewById(R.id.main_listView)).setAdapter((ListAdapter) savedInstanceState.getSerializable("list"));
     }
 
-    /** Busca cidade corrente */
-    public void buscaCidadeCorr() {
+    /** Gets current city */
+    public void searchCurrCity() {
         ((ProgressBar)findViewById(R.id.barraLoading)).setVisibility(View.VISIBLE);
         try {
             FusedLocationProviderClient mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
             mLocationProvider.getLastLocation().addOnSuccessListener(this, location -> {
-                /*NOTA: Location pode ficar a null nestas situações:
+                /*NOTE: Location can happen to be null in these situations:
                         https://droidbyme.medium.com/get-current-location-using-fusedlocationproviderclient-in-android-cb7ebf5ab88e
-                        Não vou tratar estas situações agora
+                        I'm not going to protect against these situations for now
                 */
                 if (location != null) {
                     double latitude = location.getLatitude();
@@ -133,20 +122,20 @@ public class MainActivity extends AppCompatActivity{
                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
                         Log.d("testee", "CITY: " + addresses.get(0).getLocality());
-                        cidade = addresses.get(0).getLocality();
+                        city = addresses.get(0).getLocality();
 
                         ConnectivityManager connMgr = (ConnectivityManager)
                                 getSystemService(Context.CONNECTIVITY_SERVICE);
                         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-                        TextView tvCidadeCorr = findViewById(R.id.main_cidadeCorrente);
-                        TextView tvCidadeCorrTemp = findViewById(R.id.main_cidadeCorrente_temp);
-                        ImageView imagemCidade = findViewById(R.id.main_imagemCidade);
+                        TextView tvCurrCity = findViewById(R.id.main_cidadeCorrente);
+                        TextView tvCurrCityTemp = findViewById(R.id.main_cidadeCorrente_temp);
+                        ImageView cityImage = findViewById(R.id.main_imagemCidade);
                         if (networkInfo != null && networkInfo.isConnected()) {
-                            AsyncTaskTempo asyncTaskTempo = new AsyncTaskTempo(tvCidadeCorr,tvCidadeCorrTemp,imagemCidade,cidade);
-                            asyncTaskTempo.execute();
+                            AsyncTaskWeather asyncTaskWeather = new AsyncTaskWeather(tvCurrCity,tvCurrCityTemp,cityImage,city);
+                            asyncTaskWeather.execute();
                         } else
-                            tvCidadeCorr.setText(R.string.sem_internet);
+                            tvCurrCity.setText(R.string.sem_internet);
                     }
                     catch(Exception e){
                         e.printStackTrace();
@@ -159,17 +148,17 @@ public class MainActivity extends AppCompatActivity{
         catch(SecurityException e){e.printStackTrace();}
     }
 
-    /** Busca restantes cidades */
-    public void buscaCidadesRestantes() {
+    /** Gets remaining cities from CITY_LIST */
+    public void searchRemainingCities() {
         try {
             ConnectivityManager connMgr = (ConnectivityManager)
                     getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-            ListView lvCidades = findViewById(R.id.main_listView);
+            ListView lvCities = findViewById(R.id.main_listView);
             if (networkInfo != null && networkInfo.isConnected()) {
-                AsyncTaskTempo asyncTaskTempo = new AsyncTaskTempo(this,lvCidades,LISTA_CIDADES);
-                asyncTaskTempo.execute();
+                AsyncTaskWeather asyncTaskWeather = new AsyncTaskWeather(this,lvCities,CITY_LIST);
+                asyncTaskWeather.execute();
             }
             else
                 ((TextView)findViewById(R.id.main_cidadeCorrente)).setText(R.string.sem_internet);
@@ -179,32 +168,32 @@ public class MainActivity extends AppCompatActivity{
 
     /**
      * Aux: https://www.youtube.com/watch?v=TnYXQHvuPIw&ab_channel=codestance */
-    private void verificaSeTemGPSLigado(){
+    private void getGPSInternetState(){
 
-        boolean estadoInternet = false,
-                estadoGPS = false;
+        boolean internetState = false,
+                gpsState = false;
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         try {
-            estadoGPS = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);//High accuracy
+            gpsState = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);//High accuracy
         }
         catch(Exception e){
             e.printStackTrace();
         }
 
         try {
-            estadoInternet = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            internetState = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         }
         catch(Exception e){e.printStackTrace();}
 
-        if(!estadoGPS && !estadoInternet){
+        if(!gpsState && !internetState){
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(R.string.gps_off)
                     .setCancelable(false)
                     .setPositiveButton(R.string.turn_on, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //redireciona o user para o painel de localização do dispositivo
+                            //Redirects the user to the GPS configuration phone screen
                             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
                     })
@@ -212,12 +201,11 @@ public class MainActivity extends AppCompatActivity{
                     .show();
         }
         else
-            gpsLigado = true;
+            gpsState = true;
     }
 
-    /** Pede Permissões de Localização */
-    private void pedePermissoes(){
-        //Permissões de localização em tempo real
+    /** Requests Permissions of Location in real time*/
+    private void requestPermissions(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
@@ -227,16 +215,16 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    /** Trata os pedidos de permissões em runtime */
+    /** Handles permission requests in runtime */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,int[] grantResults){
         switch (requestCode){
             case 1:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Quando dá permissões de localização pela 1ª vez, busca a localização de seguida
-                    buscaCidadeCorr();
-                    buscaCidadesRestantes();
+                    //When the user gives GPS permissions for the first time, searches for the current city
+                    searchCurrCity();
+                    searchRemainingCities();
                 }
                 else {
                     Toast.makeText(MainActivity.this, R.string.permission_denied_extstorage, Toast.LENGTH_SHORT).show();
