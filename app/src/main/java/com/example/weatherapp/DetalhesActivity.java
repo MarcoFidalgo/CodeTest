@@ -1,15 +1,15 @@
 package com.example.weatherapp;
 /**
- * Atividade secundária onde mostra detalhadamente os dados relativos à meteorologia de uma cidade escolhida
- * no ecrã principal
+ * Secondary activity where it's possible to view in more detail,
+ * data about weather conditions of a selected city in the main activity
  *
  * @author Marco Seiça Fidalgo
  * @date 6/12/2020
  * @version 1.0
- * @copyright Projeto open-source
+ * @copyright Open-source Project
  *
  */
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.example.weatherapp.Objetos.DadosMeteo;
 
-import java.io.Serializable;
 
 public class DetalhesActivity extends AppCompatActivity {
 
@@ -29,9 +28,8 @@ public class DetalhesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detalhes);
 
         // To retrieve object in second Activity
-        DadosMeteo dados = (DadosMeteo) getIntent().getSerializableExtra("dadosCidade");
-        Log.d("testee","troquei ecra");
-
+        DadosMeteo dados = (DadosMeteo) getIntent().getSerializableExtra("cityData");
+        Log.d("testee","Changed activity");
 
         ((TextView)findViewById(R.id.det_nome_cidade)).setText(dados.getNomeCidade()+"");
         ((TextView)findViewById(R.id.det_descricao)).setText(dados.getDescricao()+"");
@@ -43,7 +41,6 @@ public class DetalhesActivity extends AppCompatActivity {
 
         ImageView ivCidade = (ImageView)findViewById(R.id.det_imagemCidade);
         fundoCidade(ivCidade, dados.getCodigoIcone());
-
     }
 
 
@@ -106,7 +103,5 @@ public class DetalhesActivity extends AppCompatActivity {
             default:
                 break;
         }
-
     }
-
 }

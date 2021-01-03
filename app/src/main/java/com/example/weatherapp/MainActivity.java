@@ -1,13 +1,13 @@
  package com.example.weatherapp;
 /**
- * Atividade principal de introdução à aplicação. Mostra Um resumo da meteorologia
- * da cidade corrente do utilizador.
- * Adicionalmente mostra uma lista com o resumo de 10 cidades diferentes.
+ * Main Activity that introduces the application. Shows an overview of the weather
+ * in the user's current city.
+ * Additionally it shows a list with an overview of 10 different cities
  *
  * @author Marco Seiça Fidalgo
  * @date 6/12/2020
  * @version 1.0
- * @copyright Projeto open-source
+ * @copyright Open-source Project
  *
  */
 
@@ -16,15 +16,12 @@
  import android.content.DialogInterface;
  import android.content.Intent;
  import android.content.pm.PackageManager;
- import android.graphics.drawable.Drawable;
  import android.location.Address;
  import android.location.Geocoder;
  import android.location.LocationManager;
- import android.media.Image;
  import android.net.ConnectivityManager;
  import android.net.NetworkInfo;
  import android.os.Bundle;
- import android.os.Parcelable;
  import android.provider.Settings;
  import android.util.Log;
  import android.view.View;
@@ -40,11 +37,8 @@
  import androidx.core.app.ActivityCompat;
 
  import com.example.weatherapp.AsyncTasks.AsyncTaskTempo;
- import com.google.android.gms.common.images.ImageManager;
  import com.google.android.gms.location.FusedLocationProviderClient;
  import com.google.android.gms.location.LocationServices;
-
- import org.apache.commons.lang3.StringUtils;
 
  import java.io.Serializable;
  import java.util.List;
@@ -102,18 +96,13 @@ public class MainActivity extends AppCompatActivity{
         super.onSaveInstanceState(outState);
         // Save the state
         try {
-            View aaa = this.findViewById(android.R.id.content).getRootView();
-            outState.putString("nomeCidade", ((TextView) findViewById(R.id.main_cidadeCorrente)).getText().toString());
-            outState.putString("tempCidade", ((TextView) findViewById(R.id.main_cidadeCorrente_temp)).getText().toString());
-            outState.putSerializable("lista", (Serializable) ((ListView) findViewById(R.id.main_listView)).getAdapter());
-            //outState.putSerializable("imagem",(Serializable) ((ImageView)findViewById(R.id.main_imagemCidade)).getDrawable());
-
-            String a = "1";
+            outState.putString("cityName", ((TextView) findViewById(R.id.main_cidadeCorrente)).getText().toString());
+            outState.putString("cityTemp", ((TextView) findViewById(R.id.main_cidadeCorrente_temp)).getText().toString());
+            outState.putSerializable("list", (Serializable) ((ListView) findViewById(R.id.main_listView)).getAdapter());
         }
         catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
 
@@ -121,10 +110,9 @@ public class MainActivity extends AppCompatActivity{
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Read the state
-        ((TextView)findViewById(R.id.main_cidadeCorrente)).setText( savedInstanceState.getString("nomeCidade") );
-        ((TextView)findViewById(R.id.main_cidadeCorrente_temp)).setText( savedInstanceState.getString("tempCidade") );
-        ((ListView)findViewById(R.id.main_listView)).setAdapter((ListAdapter) savedInstanceState.getSerializable("lista"));
-        //((ImageView)findViewById(R.id.main_imagemCidade)).setImageDrawable((Drawable) savedInstanceState.getSerializable("imagem"));
+        ((TextView)findViewById(R.id.main_cidadeCorrente)).setText( savedInstanceState.getString("cityName") );
+        ((TextView)findViewById(R.id.main_cidadeCorrente_temp)).setText( savedInstanceState.getString("cityTemp") );
+        ((ListView)findViewById(R.id.main_listView)).setAdapter((ListAdapter) savedInstanceState.getSerializable("list"));
     }
 
     /** Busca cidade corrente */
@@ -144,7 +132,7 @@ public class MainActivity extends AppCompatActivity{
                         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-                        Log.d("testee", "CIDADE: " + addresses.get(0).getLocality());
+                        Log.d("testee", "CITY: " + addresses.get(0).getLocality());
                         cidade = addresses.get(0).getLocality();
 
                         ConnectivityManager connMgr = (ConnectivityManager)
@@ -211,23 +199,20 @@ public class MainActivity extends AppCompatActivity{
 
         if(!estadoGPS && !estadoInternet){
             new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Localização desligada")
+                    .setTitle(R.string.gps_off)
                     .setCancelable(false)
-                    .setPositiveButton("Ligar", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.turn_on, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //redireciona o user para o painel de localização do dispositivo
                             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
                     })
-                    .setNegativeButton("Cancelar",null)
+                    .setNegativeButton(R.string.cancel,null)
                     .show();
         }
-        else{
+        else
             gpsLigado = true;
-        }
-
-
     }
 
     /** Pede Permissões de Localização */
@@ -240,7 +225,6 @@ public class MainActivity extends AppCompatActivity{
                     1);
             return;
         }
-
     }
 
     /** Trata os pedidos de permissões em runtime */
@@ -255,12 +239,11 @@ public class MainActivity extends AppCompatActivity{
                     buscaCidadesRestantes();
                 }
                 else {
-                    Toast.makeText(MainActivity.this, "#############Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.permission_denied_extstorage, Toast.LENGTH_SHORT).show();
                 }
                 return;
             default:
                 break;
         }
-
     }
 }

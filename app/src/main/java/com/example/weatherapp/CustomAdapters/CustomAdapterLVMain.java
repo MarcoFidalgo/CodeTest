@@ -1,4 +1,13 @@
 package com.example.weatherapp.CustomAdapters;
+/**
+ * Adapter that allows to link customized data to a view
+ *
+ * @author Marco Seiça Fidalgo
+ * @date 6/12/2020
+ * @version 1.0
+ * @copyright Open-source Project
+ *
+ */
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,7 +28,6 @@ import com.example.weatherapp.Objetos.DadosMeteo;
 import com.example.weatherapp.R;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Parcelable {
 
@@ -37,8 +44,6 @@ public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Pa
     protected CustomAdapterLVMain(Parcel in) {
     }
 
-
-
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Activity act = (Activity)context;
@@ -50,28 +55,24 @@ public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Pa
         //Altera os dados da vista
         ((TextView)view.findViewById(R.id.main_lv_nome)).setText(dados.getNomeCidade());
         ((TextView)view.findViewById(R.id.main_lv_temp)).setText(Math.round(dados.getTemperaturaMin()) + "º  " + Math.round(dados.getTemperaturaMax())+"º");
-        //((TextView)view.findViewById(R.id.main_lv_condicao)).setText(dados.getCondicao());
         trocaIcons(view, dados.getCodigoIcone());
 
 
         //Visibilidades
         ((ProgressBar)act.findViewById(R.id.barraLoading)).setVisibility(View.INVISIBLE);
-        //((ListView)view.findViewById(R.id.main_listView)).setVisibility(View.VISIBLE);
         parent.setVisibility(View.VISIBLE);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //mudar activity
-
                 Intent intent = new Intent(context, DetalhesActivity.class);
                 Bundle b = new Bundle();
-                intent.putExtra("dadosCidade", dados);
+                intent.putExtra("cityData", dados);
                 intent.putExtras(b); //Put your id to your next Intent
                 context.startActivity(intent);
             }
         });
-
 
         return view;
     }
@@ -152,7 +153,6 @@ public class CustomAdapterLVMain extends BaseAdapter implements Serializable, Pa
     public long getItemId(int i) {
         return i;
     }
-
 
     @Override
     public int describeContents() {

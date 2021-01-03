@@ -13,4 +13,11 @@
     <string name="lv_humidade">Humidade</string>
     <string name="lv_descricao">Descrição</string>
     <string name="lv_pressao_atm">Pressão atmosférica</string>
+    <string name="permission_denied_extstorage">Permissão negada para ler o armazenamento externo</string>
+    <string name="gps_off">Localização desligada</string>
+    <string name="turn_on">Ligar</string>
+    <string name="turn_off">Desligar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="current_city_notfound">Não foi possível encontrar a cidade corrente</string>
+    <string name="citylist_notfound">Não foi possível encontrar as cidades pretendidas</string>
 </resources>

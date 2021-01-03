@@ -1,5 +1,13 @@
 package com.example.weatherapp.Objetos;
-
+/**
+ * Object to store data about weather conditions
+ *
+ * @author Marco Seiça Fidalgo
+ * @date 6/12/2020
+ * @version 1.0
+ * @copyright Open-source Project
+ *
+ */
 import java.io.Serializable;
 
 public class DadosMeteo implements Serializable {

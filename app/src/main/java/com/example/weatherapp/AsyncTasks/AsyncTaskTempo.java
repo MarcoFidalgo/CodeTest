@@ -1,4 +1,14 @@
 package com.example.weatherapp.AsyncTasks;
+/**
+ * AsyncTask that allows to download JSON data relative to the weather of various cities,
+ * including the user's current one
+ *
+ * @author Marco Seiça Fidalgo
+ * @date 6/12/2020
+ * @version 1.0
+ * @copyright Open-source Project
+ *
+ */
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -21,27 +31,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Locale;
 
-import static android.view.View.GONE;
 
-/**
- * Asynctask que permite fazer o download de dados JSON relativos à meteorologia de
- * várias cidades, incluíndo a cidade corrente do utilizador
- *
- * @author Marco Seiça Fidalgo
- * @date 6/12/2020
- * @version 1.0
- * @copyright Projeto open-source
- *
- */
+
 public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
     private static final String API_KEY = "6b09297fd3edfcc07d3df5c3fb286350";
     private static final String URL_OPENWEATHER = "https://api.openweathermap.org/data/2.5/weather?q=<CIDADE>&appid=<API_KEY>&units=metric";
-
-    //private static final String URL_OPENWEATHER_IDS = "https://api.openweathermap.org/data/2.5/group?id=<CIDADE>&appid=<API_KEY>&units=metric";
-    //private static final String LISTA_CIDADES = "{2267057,3117735,2968815,2009543,2618425,3169070,2643743,2964574,3067696,2761369}";
 
     private TextView tvCidade = null;
     private TextView tvCidadeTemp = null;
@@ -68,7 +64,7 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
 
     @Override
     protected Object doInBackground(String... params) {
-        String resultado = "(erro)";
+        String resultado = "(error)";
 
         try {
             if(this.tvCidade != null) {
@@ -84,7 +80,7 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
                 return dadosCidades;
             }
         } catch (Exception e) {
-            Log.d("testee","[ERRO] doInBackground AsyncTaskTempo - Erro: "+e);
+            Log.d("testee","[ERROR] doInBackground AsyncTaskWeather - Error: "+e);
         }
         return resultado;
     }
@@ -105,23 +101,17 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
             //Corre todos os elementos, os que estiverem a null não vão para o adapter
             if(dados.length > 0) {
                 final CustomAdapterLVMain customAdapterDocsAntigos = new CustomAdapterLVMain(context, dados);
-
                 lvCidades.setAdapter(customAdapterDocsAntigos);
-
-                //Visibilidade
-                //activity.findViewById(R.id.barraLoading).setVisibility(GONE);
             }
             else {
                 //nao encontrou nenhuma das cidades pretendidas
-                tvCidade.setText("Não foi possível encontrar as cidades pretendidas");
+                tvCidade.setText(R.string.citylist_notfound);
             }
         }
         else{
             //Caso receba um null
-            tvCidade.setText("Não foi possível encontrar a cidade corrente");
+            tvCidade.setText(R.string.current_city_notfound);
         }
-
-
     }
 
     //## Funções auxiliares
@@ -130,8 +120,6 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
     public DadosMeteo trataResultado(String resultado){
         try {
             JSONObject obj = new JSONObject((String) resultado);
-            // JSONArray lista = obj.getJSONArray("list");//Usado em Arrays [ ]
-            //JSONObject obj1 = lista.getJSONObject(2);
 
             JSONArray  weather = obj.getJSONArray("weather");
             JSONObject  main = obj.getJSONObject("main"),
@@ -184,11 +172,11 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
                 while ((line = br.readLine()) != null)
                     resp.append(line + "\n");
             }
-            else {
+            else
                 resp.append(R.string.erro_aceder_pagina + codigo);
-            }
-        } catch (Exception e) {
-            Log.d("testee","[ERRO] AsyncTaskTempo-getData() - Erro: "+e);
+        }
+        catch (Exception e) {
+            Log.d("testee","[ERROR] AsyncTaskWeather-getData() - Error: "+e);
         }
         return resp.toString();
     }
@@ -265,5 +253,4 @@ public class AsyncTaskTempo extends AsyncTask<String, Void, Object> {
                 break;
         }
     }
-
 }
