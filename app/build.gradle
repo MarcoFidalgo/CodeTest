@@ -29,6 +29,11 @@ android {
 }
 
 dependencies {
+    //Retrofit
+    //implementation 'com.squareup.retrofit2:converter-gson'//Converter
+    //implementation 'com.squareup.retrofit2:retrofit:(insert latest version)'
+
+
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11' //StringUtils
     implementation 'com.google.android.gms:play-services-location:11.6.0' //Para poder usar FusedLocationProviderClient
 

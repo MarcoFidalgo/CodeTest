@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.example.weatherapp.Objetos.WeatherData;
 
+import java.io.Serializable;
 
-public class DetailActivity extends AppCompatActivity {
+
+public class DetailActivity extends AppCompatActivity implements Serializable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -44,7 +44,7 @@
  import java.util.List;
  import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements Serializable{
     private static final String[] CITY_LIST = {"Lisboa", "Madrid", "Paris", "Berlim", "Copenhaga", "Roma", "Londres", "Dublin", "Praga", "Viena"};
     private boolean mainActivity;
     boolean gpsOn = false;
@@ -58,11 +58,11 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         requestPermissions();
-        getGPSInternetState();
-
+        //getGPSInternetState();
+        Log.d("testee","Requested Permissions");
         //Launches AsyncTask for the current city
         if(gpsOn){
-
+            Log.d("testee","GPS ON");
             //First time it runs
             if(savedInstanceState == null) {
                 searchCurrCity();
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
+     * LIXO LIXO //TODO APAGAR DEPOIS
      * Aux: https://www.youtube.com/watch?v=TnYXQHvuPIw&ab_channel=codestance */
     private void getGPSInternetState(){
 
@@ -201,17 +202,21 @@ public class MainActivity extends AppCompatActivity{
                     .show();
         }
         else
-            gpsState = true;
+            gpsOn = true;
     }
 
     /** Requests Permissions of Location in real time*/
     private void requestPermissions(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
             return;
+        }
+        else{
+            gpsOn = true;
+            Log.d("testee","permissions already granted");
         }
     }
 
@@ -223,6 +228,7 @@ public class MainActivity extends AppCompatActivity{
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //When the user gives GPS permissions for the first time, searches for the current city
+                    //getGPSInternetState();
                     searchCurrCity();
                     searchRemainingCities();
                 }
